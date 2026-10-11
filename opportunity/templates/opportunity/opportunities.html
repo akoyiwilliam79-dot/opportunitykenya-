@@ -1,0 +1,842 @@
+{% extends "opportunity/base.html" %}
+
+{% load static %}
+
+{% block title %}Opportunities | Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<!-- =====================================================
+     PAGE HEADER
+===================================================== -->
+
+<section class="opportunities-header">
+
+
+<div class="container">
+
+    <div class="row align-items-center">
+
+        <div class="col-lg-8">
+
+            <span class="page-badge">
+                <i class="bi bi-compass"></i>
+                Explore Opportunities
+            </span>
+
+            <h1>
+                Find your next
+                <span>opportunity.</span>
+            </h1>
+
+            <p>
+                Discover scholarships, jobs, internships,
+                fellowships, grants, competitions and training
+                opportunities from across Kenya and beyond.
+            </p>
+
+        </div>
+
+        <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+
+            <div class="opportunity-count">
+
+                <strong>
+                    {{ page_obj.paginator.count }}
+                </strong>
+
+                <span>
+                    Opportunities available
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+<!-- =====================================================
+     OPPORTUNITY CONTENT
+===================================================== -->
+
+<section class="opportunities-section">
+
+
+<div class="container">
+
+    <div class="row gx-5 gy-5">
+
+        <!-- =================================================
+             FILTER SIDEBAR
+        ================================================== -->
+
+        <div class="col-lg-3">
+
+            <form
+                method="GET"
+                action="{% url 'opportunities' %}"
+                id="opportunityFilterForm"
+            >
+
+                <div class="filter-card">
+
+                    <div class="filter-header">
+
+                        <h5>
+                            <i class="bi bi-sliders me-2"></i>
+                            Filters
+                        </h5>
+
+                        <a
+                            href="{% url 'opportunities' %}"
+                            class="btn btn-outline-secondary"
+                        >
+                            Clear Filters
+                        </a>
+
+                    </div>
+
+
+                    <!-- Search -->
+
+                    <div class="filter-group">
+
+                        <label>
+                            Search
+                        </label>
+
+                        <div class="filter-search">
+
+                            <i class="bi bi-search"></i>
+
+                            <input
+                                type="search"
+                                name="q"
+                                id="searchInput"
+                                class="form-control"
+                                placeholder="Search opportunities..."
+                                value="{{ search_query }}"
+                            >
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <div class="filter-group">
+
+                        <label>
+                            Category
+                        </label>
+
+                        <select
+                            name="category"
+                            id="categoryFilter"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Categories
+                            </option>
+
+                            {% for category in categories %}
+
+                                <option
+                                    value="{{ category.slug }}"
+                                    {% if selected_category == category.slug %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ category.name }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Location -->
+
+                    <div class="filter-group">
+
+                        <label>
+                            Location
+                        </label>
+
+                        <select
+                            name="location"
+                            id="locationFilter"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Locations
+                            </option>
+
+                            <option
+                                value="kenya"
+                                {% if selected_location == "kenya" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Kenya
+                            </option>
+
+                            <option
+                                value="remote"
+                                {% if selected_location == "remote" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Remote
+                            </option>
+
+                            <option
+                                value="international"
+                                {% if selected_location == "international" %}
+                                    selected
+                                {% endif %}
+                            >
+                                International
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Deadline -->
+
+                    <div class="filter-group">
+
+                        <label>
+                            Deadline
+                        </label>
+
+                        <select
+                            name="deadline"
+                            class="form-select"
+                            id="deadlineFilter"
+                        >
+
+                            <option
+                                value=""
+                                {% if not selected_deadline %}
+                                    selected
+                                {% endif %}
+                            >
+                                Any deadline
+                            </option>
+
+                            <option
+                                value="7"
+                                {% if selected_deadline == "7" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Closing within 7 days
+                            </option>
+
+                            <option
+                                value="30"
+                                {% if selected_deadline == "30" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Closing within 30 days
+                            </option>
+
+                            <option
+                                value="expired"
+                                {% if selected_deadline == "expired" %}
+                                    selected
+                                {% endif %}
+                            >
+                                Expired
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Opportunity Type -->
+
+                    <div class="filter-group">
+
+                        <h6>
+                            Opportunity Type
+                        </h6>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value=""
+                                id="typeAll"
+                                {% if not selected_type %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeAll"
+                            >
+                                All Types
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="scholarship"
+                                id="typeScholarship"
+                                {% if selected_type == "scholarship" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeScholarship"
+                            >
+                                Scholarships
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="job"
+                                id="typeJob"
+                                {% if selected_type == "job" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeJob"
+                            >
+                                Jobs
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="internship"
+                                id="typeInternship"
+                                {% if selected_type == "internship" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeInternship"
+                            >
+                                Internships
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="fellowship"
+                                id="typeFellowship"
+                                {% if selected_type == "fellowship" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeFellowship"
+                            >
+                                Fellowships
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="grant"
+                                id="typeGrant"
+                                {% if selected_type == "grant" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeGrant"
+                            >
+                                Grants
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="competition"
+                                id="typeCompetition"
+                                {% if selected_type == "competition" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeCompetition"
+                            >
+                                Competitions
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="training"
+                                id="typeTraining"
+                                {% if selected_type == "training" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeTraining"
+                            >
+                                Training
+                            </label>
+
+                        </div>
+
+
+                        <div class="form-check">
+
+                            <input
+                                class="form-check-input"
+                                type="radio"
+                                name="type"
+                                value="volunteering"
+                                id="typeVolunteering"
+                                {% if selected_type == "volunteering" %}
+                                    checked
+                                {% endif %}
+                            >
+
+                            <label
+                                class="form-check-label"
+                                for="typeVolunteering"
+                            >
+                                Volunteering
+                            </label>
+
+                        </div>
+
+
+                        <!-- Apply Filters -->
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100 mt-4"
+                        >
+                            <i class="bi bi-funnel me-2"></i>
+                            Apply Filters
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <!-- =================================================
+             OPPORTUNITIES
+        ================================================== -->
+
+        <div class="col-lg-9">
+
+            <!-- Results toolbar -->
+
+            <div class="results-toolbar mb-4">
+
+                <div>
+
+                    <span class="results-label">
+                        Showing
+                    </span>
+
+                    <strong id="resultsCount">
+
+                        {% if page_obj.paginator.count == 0 %}
+
+                            0 opportunities
+
+                        {% else %}
+
+                            {{ page_obj.start_index }}
+                            -
+                            {{ page_obj.end_index }}
+                            of
+                            {{ page_obj.paginator.count }}
+
+                            {% if page_obj.paginator.count == 1 %}
+                                opportunity
+                            {% else %}
+                                opportunities
+                            {% endif %}
+
+                        {% endif %}
+
+                    </strong>
+
+                </div>
+
+
+                <div class="sort-wrapper">
+
+                    <label for="sortFilter">
+                        Sort:
+                    </label>
+
+                    <select
+                        name="sort"
+                        id="sortFilter"
+                        class="form-select"
+                        form="opportunityFilterForm"
+                        onchange="document.getElementById('opportunityFilterForm').submit()"
+                    >
+
+                        <option
+                            value="latest"
+                            {% if selected_sort == "latest" %}
+                                selected
+                            {% endif %}
+                        >
+                            Latest
+                        </option>
+
+                        <option
+                            value="oldest"
+                            {% if selected_sort == "oldest" %}
+                                selected
+                            {% endif %}
+                        >
+                            Oldest
+                        </option>
+
+                        <option
+                            value="deadline"
+                            {% if selected_sort == "deadline" %}
+                                selected
+                            {% endif %}
+                        >
+                            Deadline
+                        </option>
+
+                        <option
+                            value="title"
+                            {% if selected_sort == "title" %}
+                                selected
+                            {% endif %}
+                        >
+                            A-Z
+                        </option>
+
+                    </select>
+
+                </div>
+
+            </div>
+
+
+            <!-- =================================================
+                 OPPORTUNITY GRID
+            ================================================== -->
+
+            <div
+                class="row gx-4 gy-4"
+                id="opportunitiesGrid"
+            >
+
+                {% for opportunity in opportunities %}
+
+                    <div
+                        class="col-md-6 opportunity-item"
+                        data-category="{{ opportunity.category.slug }}"
+                        data-location="{{ opportunity.location|lower }}"
+                        data-deadline="{{ opportunity.deadline|date:'Y-m-d' }}"
+                        data-title="{{ opportunity.title|lower }}"
+                        data-type="{{ opportunity.opportunity_type }}"
+                    >
+
+                        <article class="opportunity-card">
+
+                            <div class="opportunity-top">
+
+                                <span class="opportunity-type">
+                                    {{ opportunity.get_opportunity_type_display }}
+                                </span>
+
+                               <button
+                                    type="button"
+                                    class="save-btn {% if opportunity.id in saved_opportunity_ids %}saved{% endif %}"
+                                    data-opportunity-id="{{ opportunity.id }}"
+                                    aria-label="Save opportunity"
+                                    title="Save opportunity"
+                                >
+                                    <i class="bi {% if opportunity.id in saved_opportunity_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}"></i>
+                                </button>
+
+                            </div>
+
+
+                            <div class="organization">
+
+                                <div class="organization-logo">
+
+                                    {{ opportunity.organization|first|upper }}
+
+                                </div>
+
+                                <span>
+                                    {{ opportunity.organization }}
+                                </span>
+
+                            </div>
+
+
+                            <div class="opportunity-content">
+
+                                <h4>
+                                    {{ opportunity.title }}
+                                </h4>
+
+                                <p>
+                                    {{ opportunity.description|truncatewords:25 }}
+                                </p>
+
+                            </div>
+
+
+                            <div class="opportunity-meta">
+
+                                <span>
+
+                                    {% if opportunity.location|lower == "remote" %}
+
+                                        <i class="bi bi-globe"></i>
+
+                                    {% else %}
+
+                                        <i class="bi bi-geo-alt"></i>
+
+                                    {% endif %}
+
+                                    {{ opportunity.location }}
+
+                                </span>
+
+
+                                {% if opportunity.deadline %}
+
+                                    <span>
+
+                                        <i class="bi bi-calendar3"></i>
+
+                                        Deadline:
+
+                                        {{ opportunity.deadline|date:"d M" }}
+
+                                    </span>
+
+                                {% else %}
+
+                                    <span>
+
+                                        <i class="bi bi-calendar3"></i>
+
+                                        No deadline
+
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+
+                            <a
+                                href="{% url 'opportunity_detail' opportunity.slug %}"
+                                class="btn btn-outline-primary rounded-pill mt-4 w-100"
+                            >
+                                View Opportunity
+
+                                <i class="bi bi-arrow-right ms-1"></i>
+
+                            </a>
+
+                        </article>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="col-12">
+
+                        <div class="no-results">
+
+                            <div class="no-results-icon">
+
+                                <i class="bi bi-search"></i>
+
+                            </div>
+
+                            <h4>
+                                No opportunities found
+                            </h4>
+
+                            <p>
+                                Try adjusting your search or filters.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+
+            <!-- =================================================
+                 PAGINATION
+            ================================================== -->
+
+            {% if page_obj.has_other_pages %}
+
+                <div class="pagination-wrapper">
+
+                    {% if page_obj.has_previous %}
+
+                        <a
+                            href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_location %}location={{ selected_location }}&{% endif %}{% if selected_deadline %}deadline={{ selected_deadline }}&{% endif %}{% if selected_type %}type={{ selected_type }}&{% endif %}sort={{ selected_sort }}&page={{ page_obj.previous_page_number }}"
+                            class="pagination-btn"
+                            aria-label="Previous page"
+                        >
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+
+                    {% endif %}
+
+
+                    {% for num in page_obj.paginator.page_range %}
+
+                        {% if page_obj.number == num %}
+
+                            <span
+                                class="pagination-btn active"
+                                aria-current="page"
+                            >
+                                {{ num }}
+                            </span>
+
+                        {% else %}
+
+                            <a
+                                href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_location %}location={{ selected_location }}&{% endif %}{% if selected_deadline %}deadline={{ selected_deadline }}&{% endif %}{% if selected_type %}type={{ selected_type }}&{% endif %}sort={{ selected_sort }}&page={{ num }}"
+                                class="pagination-btn"
+                            >
+                                {{ num }}
+                            </a>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+
+                    {% if page_obj.has_next %}
+
+                        <a
+                            href="?{% if search_query %}q={{ search_query|urlencode }}&{% endif %}{% if selected_category %}category={{ selected_category }}&{% endif %}{% if selected_location %}location={{ selected_location }}&{% endif %}{% if selected_deadline %}deadline={{ selected_deadline }}&{% endif %}{% if selected_type %}type={{ selected_type }}&{% endif %}sort={{ selected_sort }}&page={{ page_obj.next_page_number }}"
+                            class="pagination-btn"
+                            aria-label="Next page"
+                        >
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'opportunity/js/opportunities.js' %}"></script>
+
+{% endblock %}

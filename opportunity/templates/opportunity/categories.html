@@ -1,0 +1,209 @@
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}Categories | Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<!-- =========================================
+     CATEGORY HERO
+========================================= -->
+
+<section class="categories-hero">
+    <div class="container">
+
+        <div class="categories-hero-content text-center">
+
+            <span class="hero-eyebrow">
+                <i class="bi bi-grid-3x3-gap me-1"></i>
+                Explore opportunities
+            </span>
+
+            <h1>
+                Find opportunities that
+                <span>match your goals.</span>
+            </h1>
+
+            <p>
+                Explore opportunities across different categories and
+                discover the next step in your career, education,
+                business, or personal development.
+            </p>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================================
+     CATEGORIES
+========================================= -->
+
+<section class="categories-section">
+
+    <div class="container">
+
+        <div class="section-heading text-center mb-5">
+
+            <span class="section-label">
+                Opportunity categories
+            </span>
+
+            <h2>
+                What are you looking for?
+            </h2>
+
+            <p>
+                Browse opportunities by category and find what fits
+                your goals.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+    {% for category in categories %}
+
+    <div class="col-md-6 col-lg-4">
+
+        <div class="category-card">
+
+            <div class="category-icon">
+
+                {% if category.icon %}
+                    <i class="{{ category.icon }}"></i>
+                {% else %}
+                    <i class="bi bi-grid"></i>
+                {% endif %}
+
+            </div>
+
+
+            <div class="category-content">
+
+                <span class="category-count">
+
+                    {{ category.opportunities.count }}
+
+                    {% if category.opportunities.count == 1 %}
+                        opportunity
+                    {% else %}
+                        opportunities
+                    {% endif %}
+
+                </span>
+
+
+                <h3>
+                    {{ category.name }}
+                </h3>
+
+
+                {% if category.description %}
+
+                    <p>
+                        {{ category.description }}
+                    </p>
+
+                {% else %}
+
+                    <p>
+                        Explore {{ category.name|lower }}
+                        opportunities available on Opportunity Kenya.
+                    </p>
+
+                {% endif %}
+
+
+                <a
+                    href="{% url 'opportunities' %}?category={{ category.slug }}"
+                    class="category-link"
+                >
+
+                    Browse {{ category.name|lower }}
+
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <div class="col-12">
+
+        <div class="text-center py-5">
+
+            <div class="category-icon mx-auto mb-3">
+
+                <i class="bi bi-grid"></i>
+
+            </div>
+
+            <h3>
+                No categories available
+            </h3>
+
+            <p class="text-muted">
+                Categories will appear here once they are added.
+            </p>
+
+        </div>
+
+        </div>
+
+    {% endfor %}
+
+     </div>
+
+    </div>
+
+</section>
+
+
+<!-- =========================================
+     CTA
+========================================= -->
+
+<section class="categories-cta">
+
+    <div class="container">
+
+        <div class="categories-cta-card">
+
+            <div>
+
+                <span class="section-label">
+                    Can't find what you're looking for?
+                </span>
+
+                <h2>
+                    Explore all opportunities.
+                </h2>
+
+                <p>
+                    Browse our complete collection of scholarships,
+                    jobs, internships, fellowships, grants and more.
+                </p>
+
+            </div>
+
+            <a href="{% url 'opportunities' %}"
+               class="btn btn-primary rounded-pill px-4">
+                Explore opportunities
+                <i class="bi bi-arrow-right ms-1"></i>
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

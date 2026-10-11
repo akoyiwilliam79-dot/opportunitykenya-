@@ -1,0 +1,921 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | Opportunity Kenya</title>
+
+    <link rel="icon" href="data:,">
+
+    <!-- Bootstrap -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <!-- Bootstrap Icons -->
+    <link
+        rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+    >
+
+    <!-- Inter -->
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet"
+    >
+
+    <link
+        rel="stylesheet"
+        href="{% static 'opportunity/css/style.css' %}"
+    >
+</head>
+
+<body class="auth-page register-page">
+
+<div class="auth-shell register-shell">
+
+    <!-- =====================================================
+         LEFT SIDE
+    ====================================================== -->
+
+    <section class="auth-brand-panel register-brand-panel">
+
+        <div class="brand-content">
+
+            <!-- Logo -->
+
+            <a href="{% url 'home' %}" class="auth-brand">
+
+                <span class="auth-brand-icon">
+                    <i class="bi bi-compass"></i>
+                </span>
+
+                <span>
+                    Opportunity<span>Kenya</span>
+                </span>
+
+            </a>
+
+
+            <!-- Main message -->
+
+            <div class="brand-message">
+
+                <div class="brand-badge">
+
+                    <i class="bi bi-stars"></i>
+
+                    Start your opportunity journey
+
+                </div>
+
+
+                <h1>
+
+                    One account.
+                    <span>Endless possibilities.</span>
+
+                </h1>
+
+
+                <p>
+
+                    Create your Opportunity Kenya account and
+                    keep track of the opportunities that can move
+                    your career, education and future forward.
+
+                </p>
+
+            </div>
+
+
+            <!-- Benefits -->
+
+            <div class="register-benefits">
+
+                <div class="benefit-item">
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <div>
+                        <strong>Discover</strong>
+                        <span>Find opportunities worth pursuing.</span>
+                    </div>
+
+                </div>
+
+
+                <div class="benefit-item">
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-bookmark-check"></i>
+                    </div>
+
+                    <div>
+                        <strong>Save</strong>
+                        <span>Keep interesting opportunities in one place.</span>
+                    </div>
+
+                </div>
+
+
+                <div class="benefit-item">
+
+                    <div class="benefit-icon">
+                        <i class="bi bi-rocket-takeoff"></i>
+                    </div>
+
+                    <div>
+                        <strong>Grow</strong>
+                        <span>Take action towards your next big move.</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Bottom -->
+
+            <div class="brand-footer register-brand-footer">
+
+                <div class="mini-stat">
+                    <strong>Scholarships</strong>
+                    <span>Education</span>
+                </div>
+
+                <div class="brand-divider"></div>
+
+                <div class="mini-stat">
+                    <strong>Careers</strong>
+                    <span>Jobs & internships</span>
+                </div>
+
+                <div class="brand-divider"></div>
+
+                <div class="mini-stat">
+                    <strong>Growth</strong>
+                    <span>Grants & fellowships</span>
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RIGHT SIDE
+    ====================================================== -->
+
+    <section class="auth-form-panel register-form-panel">
+
+        <div class="auth-form-wrapper register-form-wrapper">
+
+
+            <!-- Mobile logo -->
+
+            <a href="{% url 'home' %}" class="mobile-auth-brand">
+
+                <span class="auth-brand-icon">
+                    <i class="bi bi-compass"></i>
+                </span>
+
+                <span>
+                    Opportunity<span>Kenya</span>
+                </span>
+
+            </a>
+
+
+            <!-- Header -->
+
+            <div class="login-header register-header">
+
+                <div class="welcome-icon register-icon">
+
+                    <i class="bi bi-person-plus"></i>
+
+                </div>
+
+
+                <span class="form-eyebrow">
+                    CREATE ACCOUNT
+                </span>
+
+
+                <h2>
+                    Join Opportunity Kenya
+                </h2>
+
+
+                <p>
+                    Create your account and start discovering
+                    opportunities built for your next step.
+                </p>
+
+            </div>
+
+
+            <!-- Django Messages -->
+
+            {% if messages %}
+
+                <div class="auth-messages">
+
+                    {% for message in messages %}
+
+                        <div class="auth-message {{ message.tags }}">
+
+                            {% if message.tags == "success" %}
+
+                                <i class="bi bi-check-circle-fill"></i>
+
+                            {% else %}
+
+                                <i class="bi bi-exclamation-circle-fill"></i>
+
+                            {% endif %}
+
+                            <span>
+                                {{ message }}
+                            </span>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% endif %}
+
+
+            <!-- =================================================
+                 REGISTER FORM
+            ================================================== -->
+
+            <form
+                method="POST"
+                class="modern-auth-form register-form"
+                id="registerForm"
+                novalidate
+            >
+
+                {% csrf_token %}
+
+
+                <!-- Full Name -->
+
+                <div class="modern-field">
+
+                    <label for="full_name">
+                        Full name
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-person input-icon"></i>
+
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            placeholder="e.g. William Akoyi"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Email -->
+
+                <div class="modern-field">
+
+                    <label for="email">
+                        Email address
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-envelope input-icon"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="you@example.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- Password -->
+
+                <div class="modern-field">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-lock input-icon"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create a strong password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                            aria-label="Show password"
+                        >
+
+                            <i class="bi bi-eye"></i>
+
+                        </button>
+
+                    </div>
+
+
+                    <!-- Password strength -->
+
+                    <div class="password-strength">
+
+                        <div class="strength-bars">
+
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                            <span></span>
+
+                        </div>
+
+                        <div class="strength-info">
+
+                            <span id="strengthText">
+                                Use at least 8 characters
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Confirm Password -->
+
+                <div class="modern-field">
+
+                    <label for="confirm_password">
+                        Confirm password
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i class="bi bi-shield-lock input-icon"></i>
+
+                        <input
+                            type="password"
+                            id="confirm_password"
+                            name="confirm_password"
+                            placeholder="Re-enter your password"
+                            autocomplete="new-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="toggleConfirmPassword"
+                            aria-label="Show password"
+                        >
+
+                            <i class="bi bi-eye"></i>
+
+                        </button>
+
+                    </div>
+
+                    <div
+                        class="password-match"
+                        id="passwordMatch"
+                    ></div>
+
+                </div>
+
+
+                <!-- Terms -->
+
+                <label class="terms-option">
+
+                    <input
+                        type="checkbox"
+                        id="terms"
+                        name="terms"
+                        required
+                    >
+
+                    <span class="custom-checkbox"></span>
+
+                    <span>
+
+                        I agree to the
+                        <a href="#" target="_blank">
+                            Terms of Service
+                        </a>
+                        and
+                        <a href="#" target="_blank">
+                            Privacy Policy
+                        </a>.
+
+                    </span>
+
+                </label>
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    class="login-submit register-submit"
+                    id="registerButton"
+                >
+
+                    <span class="button-text">
+                        Create my account
+                    </span>
+
+                    <i class="bi bi-arrow-right"></i>
+
+                    <span
+                        class="button-spinner spinner-border spinner-border-sm"
+                        role="status"
+                        aria-hidden="true"
+                    ></span>
+
+                </button>
+
+            </form>
+
+
+            <!-- Login -->
+
+            <div class="register-prompt">
+
+                <span>
+                    Already have an account?
+                </span>
+
+                <a href="{% url 'login' %}">
+                    Sign in
+                    <i class="bi bi-arrow-up-right"></i>
+                </a>
+
+            </div>
+
+
+            <!-- Security -->
+
+            <div class="auth-security">
+
+                <i class="bi bi-shield-check"></i>
+
+                <span>
+                    Your account information is securely protected.
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</div>
+
+
+<!-- =========================================================
+     REGISTER JAVASCRIPT
+========================================================= -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+
+    /* =====================================================
+       PASSWORD TOGGLE
+    ====================================================== */
+
+    function setupPasswordToggle(
+        inputId,
+        buttonId
+    ) {
+
+        const input =
+            document.getElementById(inputId);
+
+        const button =
+            document.getElementById(buttonId);
+
+        if (!input || !button) {
+            return;
+        }
+
+        button.addEventListener("click", function () {
+
+            const isPassword =
+                input.type === "password";
+
+            input.type =
+                isPassword ? "text" : "password";
+
+            this.innerHTML = isPassword
+                ? '<i class="bi bi-eye-slash"></i>'
+                : '<i class="bi bi-eye"></i>';
+
+            this.setAttribute(
+                "aria-label",
+                isPassword
+                    ? "Hide password"
+                    : "Show password"
+            );
+
+        });
+
+    }
+
+
+    setupPasswordToggle(
+        "password",
+        "togglePassword"
+    );
+
+
+    setupPasswordToggle(
+        "confirm_password",
+        "toggleConfirmPassword"
+    );
+
+
+    /* =====================================================
+       PASSWORD STRENGTH
+    ====================================================== */
+
+    const password =
+        document.getElementById("password");
+
+    const strengthBars =
+        document.querySelectorAll(
+            ".strength-bars span"
+        );
+
+    const strengthText =
+        document.getElementById("strengthText");
+
+
+    if (password) {
+
+        password.addEventListener(
+            "input",
+            function () {
+
+                const value =
+                    password.value;
+
+                let strength = 0;
+
+
+                if (value.length >= 8) {
+                    strength++;
+                }
+
+                if (/[A-Z]/.test(value)) {
+                    strength++;
+                }
+
+                if (/[0-9]/.test(value)) {
+                    strength++;
+                }
+
+                if (/[^A-Za-z0-9]/.test(value)) {
+                    strength++;
+                }
+
+
+                strengthBars.forEach(
+                    function (bar, index) {
+
+                        bar.classList.remove(
+                            "active"
+                        );
+
+                        if (index < strength) {
+
+                            bar.classList.add(
+                                "active"
+                            );
+
+                        }
+
+                    }
+                );
+
+
+                if (!value) {
+
+                    strengthText.textContent =
+                        "Use at least 8 characters";
+
+                } else if (strength === 1) {
+
+                    strengthText.textContent =
+                        "Weak password";
+
+                } else if (strength === 2) {
+
+                    strengthText.textContent =
+                        "Fair password";
+
+                } else if (strength === 3) {
+
+                    strengthText.textContent =
+                        "Good password";
+
+                } else {
+
+                    strengthText.textContent =
+                        "Strong password";
+
+                }
+
+            }
+        );
+
+    }
+
+
+    /* =====================================================
+       PASSWORD MATCH
+    ====================================================== */
+
+    const confirmPassword =
+        document.getElementById(
+            "confirm_password"
+        );
+
+    const passwordMatch =
+        document.getElementById(
+            "passwordMatch"
+        );
+
+
+    function checkPasswordMatch() {
+
+        if (!password.value ||
+            !confirmPassword.value) {
+
+            passwordMatch.textContent = "";
+            passwordMatch.className =
+                "password-match";
+
+            return;
+
+        }
+
+
+        if (
+            password.value ===
+            confirmPassword.value
+        ) {
+
+            passwordMatch.textContent =
+                "Passwords match";
+
+            passwordMatch.className =
+                "password-match match";
+
+        } else {
+
+            passwordMatch.textContent =
+                "Passwords do not match";
+
+            passwordMatch.className =
+                "password-match no-match";
+
+        }
+
+    }
+
+
+    if (confirmPassword) {
+
+        confirmPassword.addEventListener(
+            "input",
+            checkPasswordMatch
+        );
+
+    }
+
+
+    if (password) {
+
+        password.addEventListener(
+            "input",
+            checkPasswordMatch
+        );
+
+    }
+
+
+    /* =====================================================
+       FORM SUBMISSION
+    ====================================================== */
+
+    const registerForm =
+        document.getElementById(
+            "registerForm"
+        );
+
+    const registerButton =
+        document.getElementById(
+            "registerButton"
+        );
+
+
+    if (registerForm) {
+
+        registerForm.addEventListener(
+            "submit",
+            function (event) {
+
+                const fullName =
+                    document.getElementById(
+                        "full_name"
+                    ).value.trim();
+
+                const email =
+                    document.getElementById(
+                        "email"
+                    ).value.trim();
+
+                const passwordValue =
+                    password.value;
+
+                const confirmValue =
+                    confirmPassword.value;
+
+                const terms =
+                    document.getElementById(
+                        "terms"
+                    ).checked;
+
+
+                if (!fullName ||
+                    !email ||
+                    !passwordValue ||
+                    !confirmValue) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Please complete all required fields."
+                    );
+
+                    return;
+
+                }
+
+
+                if (passwordValue.length < 8) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Your password must contain at least 8 characters."
+                    );
+
+                    return;
+
+                }
+
+
+                if (
+                    passwordValue !==
+                    confirmValue
+                ) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Your passwords do not match."
+                    );
+
+                    return;
+
+                }
+
+
+                if (!terms) {
+
+                    event.preventDefault();
+
+                    alert(
+                        "Please accept the Terms of Service and Privacy Policy."
+                    );
+
+                    return;
+
+                }
+
+
+                if (registerButton) {
+
+                    const buttonText =
+                        registerButton.querySelector(
+                            ".button-text"
+                        );
+
+                    const buttonIcon =
+                        registerButton.querySelector(
+                            ".bi-arrow-right"
+                        );
+
+                    const spinner =
+                        registerButton.querySelector(
+                            ".button-spinner"
+                        );
+
+
+                    if (buttonText) {
+
+                        buttonText.textContent =
+                            "Creating account...";
+
+                    }
+
+
+                    if (buttonIcon) {
+
+                        buttonIcon.style.display =
+                            "none";
+
+                    }
+
+
+                    if (spinner) {
+
+                        spinner.style.display =
+                            "inline-block";
+
+                    }
+
+
+                    registerButton.disabled =
+                        true;
+
+                }
+
+            }
+        );
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>

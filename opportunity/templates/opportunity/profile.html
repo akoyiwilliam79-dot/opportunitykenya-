@@ -1,0 +1,818 @@
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}My Profile | Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<section class="profile-page">
+
+```
+<div class="container">
+
+    <!-- Django Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show mb-4" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Page Header -->
+    <div class="profile-page-header">
+
+        <div>
+            <span class="profile-eyebrow">
+                <i class="bi bi-person-circle"></i>
+                Account
+            </span>
+
+            <h1>My Profile</h1>
+
+            <p>
+                Manage your personal information and opportunity preferences.
+            </p>
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="profile-back-btn">
+            <i class="bi bi-arrow-left"></i>
+            Back to Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- Main Profile Form -->
+    <form
+        method="post"
+        enctype="multipart/form-data"
+        id="profileForm"
+    >
+
+        {% csrf_token %}
+
+        <div class="profile-layout">
+
+            <!-- MAIN PROFILE -->
+            <div class="profile-main">
+
+                <!-- Profile Identity -->
+                <div class="profile-card profile-identity-card">
+
+                    <div class="profile-cover"></div>
+
+                    <div class="profile-identity-content">
+
+                        <div class="large-profile-avatar">
+
+                            {% if profile.profile_picture %}
+                                <img
+                                    src="{{ profile.profile_picture.url }}"
+                                    alt="Profile picture"
+                                    class="profile-avatar-image"
+                                    id="profileAvatarPreview"
+                                >
+                            {% else %}
+                                <span id="profileAvatarInitial">
+                                    {{ request.user.first_name|first|upper|default:request.user.username|first|upper }}
+                                </span>
+                            {% endif %}
+
+                        </div>
+
+                        <div class="profile-identity-info">
+
+                            <h2>
+                                {{ request.user.get_full_name|default:request.user.username }}
+                            </h2>
+
+                            <p>
+                                <i class="bi bi-envelope"></i>
+                                {{ request.user.email|default:"No email provided" }}
+                            </p>
+
+                            <span class="profile-member">
+                                <i class="bi bi-patch-check-fill"></i>
+                                Opportunity Kenya Member
+                            </span>
+
+                        </div>
+
+                        <label
+                            for="profilePictureInput"
+                            class="edit-profile-btn"
+                            role="button"
+                        >
+                            <i class="bi bi-camera"></i>
+                            Change Photo
+                        </label>
+
+                    </div>
+
+                    <div class="px-4 pb-4">
+                        <label for="profilePictureInput" class="form-label">
+                            Profile picture
+                        </label>
+
+                        <input
+                            type="file"
+                            id="profilePictureInput"
+                            name="profile_picture"
+                            class="form-control"
+                            accept="image/*"
+                        >
+
+                        <small class="text-muted">
+                            Select an image from your device.
+                        </small>
+                    </div>
+
+                </div>
+
+
+                <!-- Personal Information -->
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+
+                        <div>
+                            <h3>Personal Information</h3>
+                            <p>Keep your information up to date.</p>
+                        </div>
+
+                        <i class="bi bi-person-vcard"></i>
+
+                    </div>
+
+                    <div class="profile-fields">
+
+                        <div class="profile-field">
+                            <label for="first_name">First name</label>
+
+                            <div class="profile-field-value">
+                                <i class="bi bi-person"></i>
+
+                                <input
+                                    type="text"
+                                    id="first_name"
+                                    name="first_name"
+                                    class="form-control"
+                                    value="{{ request.user.first_name }}"
+                                    placeholder="Enter your first name"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+
+                        <div class="profile-field">
+                            <label for="last_name">Last name</label>
+
+                            <div class="profile-field-value">
+                                <i class="bi bi-person"></i>
+
+                                <input
+                                    type="text"
+                                    id="last_name"
+                                    name="last_name"
+                                    class="form-control"
+                                    value="{{ request.user.last_name }}"
+                                    placeholder="Enter your last name"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+
+                        <div class="profile-field">
+                            <label for="email">Email address</label>
+
+                            <div class="profile-field-value">
+                                <i class="bi bi-envelope"></i>
+
+                                <input
+                                    type="email"
+                                    id="email"
+                                    name="email"
+                                    class="form-control"
+                                    value="{{ request.user.email }}"
+                                    placeholder="Enter your email"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+
+                        <div class="profile-field">
+                            <label for="phone">Phone number</label>
+
+                            <div class="profile-field-value">
+                                <i class="bi bi-telephone"></i>
+
+                                <input
+                                    type="tel"
+                                    id="phone"
+                                    name="phone"
+                                    class="form-control"
+                                    value="{{ profile.phone }}"
+                                    placeholder="Enter your phone number"
+                                >
+                            </div>
+                        </div>
+
+
+                        <div class="profile-field">
+                            <label for="location">Location</label>
+
+                            <div class="profile-field-value">
+                                <i class="bi bi-geo-alt"></i>
+
+                                <input
+                                    type="text"
+                                    id="location"
+                                    name="location"
+                                    class="form-control"
+                                    value="{{ profile.location }}"
+                                    placeholder="e.g. Nakuru, Kenya"
+                                >
+                            </div>
+                        </div>
+
+
+                        <div class="profile-field">
+                            <label for="bio">About me</label>
+
+                            <textarea
+                                id="bio"
+                                name="bio"
+                                class="form-control"
+                                rows="4"
+                                placeholder="Tell us a little about yourself"
+                            >{{ profile.bio }}</textarea>
+                        </div>
+
+
+                        <div class="profile-field">
+                            <label for="skills">Skills</label>
+
+                            <textarea
+                                id="skills"
+                                name="skills"
+                                class="form-control"
+                                rows="3"
+                                placeholder="e.g. Python, Django, Data Analysis"
+                            >{{ profile.skills }}</textarea>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Opportunity Preferences -->
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+
+                        <div>
+                            <h3>Opportunity Preferences</h3>
+
+                            <p>
+                                Tell us what opportunities you're interested in.
+                            </p>
+                        </div>
+
+                        <i class="bi bi-sliders"></i>
+
+                    </div>
+
+
+                    <div class="preference-section">
+
+                        <label class="preference-label">
+                            Preferred categories
+                        </label>
+
+                        <div class="preference-tags">
+
+                            {% for category in categories %}
+
+                                <label class="preference-tag
+                                    {% if category.id in selected_categories %}selected{% endif %}">
+
+                                    <input
+                                        type="checkbox"
+                                        name="preferred_categories"
+                                        value="{{ category.id }}"
+                                        {% if category.id in selected_categories %}checked{% endif %}
+                                    >
+
+                                    <span>{{ category.name }}</span>
+
+                                    {% if category.id in selected_categories %}
+                                        <i class="bi bi-check"></i>
+                                    {% endif %}
+
+                                </label>
+
+                            {% empty %}
+
+                                <p class="text-muted">
+                                    No active opportunity categories are available yet.
+                                </p>
+
+                            {% endfor %}
+
+                        </div>
+
+                        <small class="text-muted d-block mt-2">
+                            Select all the categories that interest you.
+                        </small>
+
+                    </div>
+
+
+                    <div class="preference-section">
+
+                        <label for="interests" class="preference-label">
+                            Additional interests
+                        </label>
+
+                        <textarea
+                            id="interests"
+                            name="interests"
+                            class="form-control"
+                            rows="4"
+                            placeholder="e.g. Scholarships, Software Development, Artificial Intelligence, Data Science"
+                        >{{ profile.interests }}</textarea>
+
+                        <small class="text-muted">
+                            Describe your interests to help personalize your experience.
+                        </small>
+
+                    </div>
+
+
+                    <div class="preference-section">
+
+                        <label for="preferredLocation" class="preference-label">
+                            Preferred location
+                        </label>
+
+                        <input
+                            type="text"
+                            id="preferredLocation"
+                            name="location"
+                            class="form-control"
+                            value="{{ profile.location }}"
+                            placeholder="e.g. Kenya, Nairobi, Remote"
+                        >
+
+                        <small class="text-muted">
+                            Enter your preferred location. This is also used as your profile location.
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Notification Settings -->
+                <div class="profile-card">
+
+                    <div class="profile-card-header">
+
+                        <div>
+                            <h3>Notifications</h3>
+
+                            <p>
+                                Choose how Opportunity Kenya keeps you informed.
+                            </p>
+                        </div>
+
+                        <i class="bi bi-bell"></i>
+
+                    </div>
+
+
+                    <!-- Email Notifications -->
+                    <div class="notification-setting">
+
+                        <div class="notification-setting-icon">
+                            <i class="bi bi-envelope"></i>
+                        </div>
+
+                        <div class="notification-setting-content">
+                            <strong>Email notifications</strong>
+
+                            <span>
+                                Receive important opportunity updates.
+                            </span>
+                        </div>
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                name="email_notifications"
+                                {% if profile.email_notifications %}checked{% endif %}
+                            >
+
+                            <span class="slider"></span>
+                        </label>
+
+                    </div>
+
+
+                    <!-- Deadline Notifications -->
+                    <div class="notification-setting">
+
+                        <div class="notification-setting-icon">
+                            <i class="bi bi-clock-history"></i>
+                        </div>
+
+                        <div class="notification-setting-content">
+                            <strong>Deadline reminders</strong>
+
+                            <span>
+                                Get reminded before opportunity deadlines.
+                            </span>
+                        </div>
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                name="deadline_notifications"
+                                {% if profile.deadline_notifications %}checked{% endif %}
+                            >
+
+                            <span class="slider"></span>
+                        </label>
+
+                    </div>
+
+
+                    <!-- Opportunity Notifications -->
+                    <div class="notification-setting">
+
+                        <div class="notification-setting-icon">
+                            <i class="bi bi-stars"></i>
+                        </div>
+
+                        <div class="notification-setting-content">
+                            <strong>New opportunity alerts</strong>
+
+                            <span>
+                                Get notified about new opportunities.
+                            </span>
+                        </div>
+
+                        <label class="switch">
+                            <input
+                                type="checkbox"
+                                name="opportunity_notifications"
+                                {% if profile.opportunity_notifications %}checked{% endif %}
+                            >
+
+                            <span class="slider"></span>
+                        </label>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Save Changes -->
+                <div class="profile-card profile-save-card">
+
+                    <div>
+                        <h3>Save your changes</h3>
+
+                        <p>
+                            Make sure to save your updated information and preferences.
+                        </p>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary rounded-pill px-4"
+                        id="saveProfileButton"
+                    >
+                        <i class="bi bi-check-circle me-2"></i>
+                        Save Changes
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- SIDEBAR -->
+            <aside class="profile-sidebar">
+
+                <!-- Profile Completion -->
+                <div class="profile-progress-card">
+
+                    <div class="progress-card-top">
+
+                        <div class="progress-ring">
+                            <span>{{ profile_completion }}%</span>
+                        </div>
+
+                        <div>
+                            <strong>Profile strength</strong>
+
+                            <span>
+                                {% if profile_completion >= 100 %}
+                                    Profile complete!
+                                {% elif profile_completion >= 75 %}
+                                    Almost there!
+                                {% elif profile_completion >= 40 %}
+                                    Good progress!
+                                {% else %}
+                                    Keep going!
+                                {% endif %}
+                            </span>
+                        </div>
+
+                    </div>
+
+                                    
+                    <div class="profile-progress-line">
+                        <span style="width: {{ profile_completion }}%;"></span>
+                    </div>
+
+
+                    <p>
+                        Complete your profile to help personalize your Opportunity Kenya experience.
+                    </p>
+
+                </div>
+
+
+                <!-- Account Links -->
+                <div class="profile-sidebar-card">
+
+                    <h3>Account</h3>
+
+                    <a href="{% url 'password_change' %}">
+                        <span>
+                            <i class="bi bi-lock"></i>
+                            Change password
+                        </span>
+
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="{% url 'dashboard' %}">
+                        <span>
+                            <i class="bi bi-shield-check"></i>
+                            Account dashboard
+                        </span>
+
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="{% url 'saved_opportunities' %}">
+                        <span>
+                            <i class="bi bi-bookmark"></i>
+                            Saved opportunities
+                        </span>
+
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                    <a href="{% url 'my_applications' %}">
+                        <span>
+                            <i class="bi bi-file-earmark-text"></i>
+                            My applications
+                        </span>
+
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+
+                </div>
+
+
+                <!-- Account Information -->
+                <div class="profile-sidebar-card">
+
+                    <h3>Account Information</h3>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block">
+                            Username
+                        </small>
+
+                        <strong>
+                            {{ request.user.username }}
+                        </strong>
+                    </div>
+
+                    <div>
+                        <small class="text-muted d-block">
+                            Member since
+                        </small>
+
+                        <strong>
+                            {{ request.user.date_joined|date:"d M Y" }}
+                        </strong>
+                    </div>
+
+                </div>
+
+
+                <!-- Danger Zone -->
+                <div class="profile-danger-card">
+
+                    <div>
+                        <i class="bi bi-exclamation-triangle"></i>
+                        <h3>Danger zone</h3>
+                    </div>
+
+                    <p>
+                        Permanently deleting your account may remove access to your saved opportunities and application history.
+                    </p>
+
+                    <a
+                        href="{% url 'logout' %}"
+                        class="delete-account-btn"
+                    >
+                        Log out
+                    </a>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+    </form>
+
+</div>
+```
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'opportunity/js/profile.js' %}"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Profile picture preview
+    const pictureInput = document.getElementById("profilePictureInput");
+
+    if (pictureInput) {
+        pictureInput.addEventListener("change", function (event) {
+
+            const file = event.target.files[0];
+
+            if (!file) {
+                return;
+            }
+
+            if (!file.type.startsWith("image/")) {
+                alert("Please select a valid image file.");
+                pictureInput.value = "";
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                let avatar = document.getElementById("profileAvatarPreview");
+
+                if (!avatar) {
+
+                    const avatarContainer = document.querySelector(".large-profile-avatar");
+
+                    if (!avatarContainer) {
+                        return;
+                    }
+
+                    avatarContainer.innerHTML = "";
+
+                    avatar = document.createElement("img");
+                    avatar.id = "profileAvatarPreview";
+                    avatar.className = "profile-avatar-image";
+                    avatar.alt = "Profile picture";
+
+                    avatarContainer.appendChild(avatar);
+                }
+
+                avatar.src = e.target.result;
+            };
+
+            reader.readAsDataURL(file);
+        });
+    }
+
+
+    // Preferred category selection styling
+    document.querySelectorAll(".preference-tag input[type='checkbox']").forEach(function (checkbox) {
+
+        checkbox.addEventListener("change", function () {
+
+            const tag = checkbox.closest(".preference-tag");
+
+            if (tag) {
+                tag.classList.toggle("selected", checkbox.checked);
+
+                const existingCheck = tag.querySelector(".bi-check");
+
+                if (checkbox.checked && !existingCheck) {
+                    const icon = document.createElement("i");
+                    icon.className = "bi bi-check";
+                    tag.appendChild(icon);
+                } else if (!checkbox.checked && existingCheck) {
+                    existingCheck.remove();
+                }
+            }
+        });
+
+    });
+
+
+    // Prevent accidental double submission
+    const profileForm = document.getElementById("profileForm");
+    const saveButton = document.getElementById("saveProfileButton");
+
+    if (profileForm && saveButton) {
+        profileForm.addEventListener("submit", function () {
+            saveButton.disabled = true;
+            saveButton.innerHTML =
+                '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Saving...';
+        });
+    }
+
+});
+</script>
+
+<style>
+.profile-avatar-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.preference-tag {
+    cursor: pointer;
+}
+
+.preference-tag input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.preference-tag:has(input[type="checkbox"]:focus-visible) {
+    outline: 2px solid var(--bs-primary, #0d6efd);
+    outline-offset: 3px;
+}
+
+.profile-field-value .form-control {
+    min-width: 0;
+    width: 100%;
+}
+
+.profile-save-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.profile-save-card h3 {
+    margin-bottom: 6px;
+}
+
+.profile-save-card p {
+    margin-bottom: 0;
+}
+
+.profile-danger-card .delete-account-btn {
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+}
+
+@media (max-width: 576px) {
+    .profile-save-card {
+        align-items: stretch;
+    }
+
+    .profile-save-card button {
+        width: 100%;
+    }
+}
+</style>
+
+{% endblock %}

@@ -1,0 +1,508 @@
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}Dashboard | Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<section class="dashboard-page">
+
+
+<div class="container">
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+
+        <div>
+            <span class="dashboard-eyebrow">
+                <i class="bi bi-grid-1x2-fill"></i>
+                Personal Dashboard
+            </span>
+
+            <h1>
+                Welcome back<span class="dashboard-name">, {{ request.user.first_name|default:request.user.username }}</span> 👋
+            </h1>
+
+            <p>
+                Keep track of opportunities that matter to your career and future.
+            </p>
+        </div>
+
+        <div class="dashboard-header-action">
+            <a href="{% url 'opportunities' %}" class="btn dashboard-browse-btn">
+                <i class="bi bi-search me-2"></i>
+                Explore Opportunities
+            </a>
+        </div>
+
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="dashboard-stats">
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon stat-icon-primary">
+                <i class="bi bi-bookmark-heart-fill"></i>
+            </div>
+
+            <div>
+                <span class="stat-label">Saved Opportunities</span>
+                <strong>12</strong>
+                <small>
+                    <i class="bi bi-arrow-up"></i>
+                    3 added this week
+                </small>
+            </div>
+        </div>
+
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon stat-icon-blue">
+                <i class="bi bi-send-check-fill"></i>
+            </div>
+
+            <div>
+                <span class="stat-label">Applications</span>
+                <strong>5</strong>
+                <small>
+                    <i class="bi bi-clock"></i>
+                    2 awaiting response
+                </small>
+            </div>
+        </div>
+
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon stat-icon-purple">
+                <i class="bi bi-stars"></i>
+            </div>
+
+            <div>
+                <span class="stat-label">New Opportunities</span>
+                <strong>18</strong>
+                <small>
+                    <i class="bi bi-arrow-up"></i>
+                    Since your last visit
+                </small>
+            </div>
+        </div>
+
+
+        <div class="dashboard-stat-card">
+            <div class="stat-icon stat-icon-orange">
+                <i class="bi bi-hourglass-split"></i>
+            </div>
+
+            <div>
+                <span class="stat-label">Closing Soon</span>
+                <strong>4</strong>
+                <small>
+                    <i class="bi bi-exclamation-circle"></i>
+                    Within 7 days
+                </small>
+            </div>
+        </div>
+
+    </div>
+
+
+    <!-- Main Dashboard Grid -->
+    <div class="dashboard-grid">
+
+        <!-- Main Column -->
+        <div class="dashboard-main-column">
+
+            <!-- Recommended -->
+            <div class="dashboard-section">
+
+                <div class="dashboard-section-header">
+                    <div>
+                        <h2>Recommended for you</h2>
+                        <p>Opportunities selected based on your interests.</p>
+                    </div>
+
+                    <a href="{% url 'opportunities' %}">
+                        View all
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+
+
+                <div class="recommended-grid">
+
+                    <!-- Opportunity 1 -->
+                    <article class="dashboard-opportunity-card">
+
+                        <div class="dashboard-card-top">
+
+                            <div class="organization-logo logo-government">
+                                <i class="bi bi-building"></i>
+                            </div>
+
+                            <button class="dashboard-save-btn" type="button">
+                                <i class="bi bi-bookmark"></i>
+                            </button>
+
+                        </div>
+
+                        <span class="dashboard-category">Scholarship</span>
+
+                        <h3>
+                            Kenya Government Scholarship Programme
+                        </h3>
+
+                        <p class="organization-name">
+                            Government of Kenya
+                        </p>
+
+                        <div class="dashboard-card-meta">
+                            <span>
+                                <i class="bi bi-geo-alt"></i>
+                                Kenya
+                            </span>
+
+                            <span>
+                                <i class="bi bi-calendar3"></i>
+                                Oct 30, 2026
+                            </span>
+                        </div>
+
+                        <a href="{% url 'opportunity_detail' 'kenya-government-scholarship' %}"
+                           class="dashboard-view-btn">
+                            View Opportunity
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </article>
+
+
+                    <!-- Opportunity 2 -->
+                    <article class="dashboard-opportunity-card">
+
+                        <div class="dashboard-card-top">
+
+                            <div class="organization-logo logo-blue">
+                                <i class="bi bi-globe2"></i>
+                            </div>
+
+                            <button class="dashboard-save-btn" type="button">
+                                <i class="bi bi-bookmark"></i>
+                            </button>
+
+                        </div>
+
+                        <span class="dashboard-category category-blue">
+                            Fellowship
+                        </span>
+
+                        <h3>
+                            African Leadership Fellowship
+                        </h3>
+
+                        <p class="organization-name">
+                            African Leadership Network
+                        </p>
+
+                        <div class="dashboard-card-meta">
+                            <span>
+                                <i class="bi bi-geo-alt"></i>
+                                Nairobi
+                            </span>
+
+                            <span>
+                                <i class="bi bi-calendar3"></i>
+                                Nov 12, 2026
+                            </span>
+                        </div>
+
+                        <a href="{% url 'opportunities' %}"
+                           class="dashboard-view-btn">
+                            View Opportunity
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                    </article>
+
+                </div>
+
+            </div>
+
+
+            <!-- Saved Opportunities -->
+            <div class="dashboard-section">
+
+                <div class="dashboard-section-header">
+
+                    <div>
+                        <h2>Recently saved</h2>
+                        <p>Opportunities you want to come back to.</p>
+                    </div>
+
+                    <a href="{% url 'saved_opportunities' %}">
+                        View saved
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+
+                </div>
+
+
+                <div class="saved-opportunities-list">
+
+                    <div class="saved-opportunity-row">
+
+                        <div class="saved-opportunity-icon">
+                            <i class="bi bi-briefcase-fill"></i>
+                        </div>
+
+                        <div class="saved-opportunity-content">
+
+                            <h4>Junior Software Developer</h4>
+
+                            <p>
+                                TechNova Kenya
+                                <span>•</span>
+                                Nairobi
+                            </p>
+
+                        </div>
+
+                        <div class="saved-opportunity-deadline">
+                            <span>Deadline</span>
+                            <strong>Oct 18</strong>
+                        </div>
+
+                        <a href="{% url 'opportunities' %}"
+                           class="saved-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="saved-opportunity-row">
+
+                        <div class="saved-opportunity-icon saved-icon-purple">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+
+                        <div class="saved-opportunity-content">
+
+                            <h4>Future Leaders Scholarship</h4>
+
+                            <p>
+                                Education Foundation
+                                <span>•</span>
+                                Kenya
+                            </p>
+
+                        </div>
+
+                        <div class="saved-opportunity-deadline">
+                            <span>Deadline</span>
+                            <strong>Oct 25</strong>
+                        </div>
+
+                        <a href="{% url 'opportunities' %}"
+                           class="saved-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    </div>
+
+
+                    <div class="saved-opportunity-row">
+
+                        <div class="saved-opportunity-icon saved-icon-orange">
+                            <i class="bi bi-lightbulb-fill"></i>
+                        </div>
+
+                        <div class="saved-opportunity-content">
+
+                            <h4>Kenya Innovation Challenge</h4>
+
+                            <p>
+                                Innovation Hub Kenya
+                                <span>•</span>
+                                Nairobi
+                            </p>
+
+                        </div>
+
+                        <div class="saved-opportunity-deadline">
+                            <span>Deadline</span>
+                            <strong>Nov 02</strong>
+                        </div>
+
+                        <a href="{% url 'opportunities' %}"
+                           class="saved-arrow">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Sidebar -->
+        <aside class="dashboard-sidebar">
+
+            <!-- Profile Completion -->
+            <div class="profile-completion-card">
+
+                <div class="profile-completion-header">
+
+                    <div class="profile-avatar">
+                        {% if request.user.profile.profile_picture %}
+                            <img src="{{ request.user.profile.profile_picture.url }}" alt="{{ request.user.get_full_name|default:request.user.username }} profile picture">
+                        {% else %}
+                            {{ request.user.first_name|default:request.user.username|slice:":1"|upper }}
+                        {% endif %}
+                    </div>
+
+                    <div>
+                        <strong>{{ request.user.get_full_name|default:request.user.username }}</strong>
+                        <span>Opportunity Seeker</span>
+                    </div>
+
+                </div>
+
+                <div class="completion-info">
+                    <div>
+                        <span>Profile completion</span>
+                        <strong>75%</strong>
+                    </div>
+
+                    <div class="completion-progress">
+                        <span style="width: 75%;"></span>
+                    </div>
+                </div>
+
+                <a href="{% url 'profile' %}" class="complete-profile-btn">
+                    Complete your profile
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+
+
+            <!-- Closing Soon -->
+            <div class="closing-soon-card">
+
+                <div class="sidebar-section-title">
+                    <div>
+                        <i class="bi bi-alarm"></i>
+                        <h3>Closing soon</h3>
+                    </div>
+
+                    <span>4</span>
+                </div>
+
+
+                <div class="closing-item">
+
+                    <div class="closing-date">
+                        <strong>12</strong>
+                        <span>OCT</span>
+                    </div>
+
+                    <div>
+                        <h4>Digital Skills Grant</h4>
+                        <p>3 days left</p>
+                    </div>
+
+                </div>
+
+
+                <div class="closing-item">
+
+                    <div class="closing-date">
+                        <strong>15</strong>
+                        <span>OCT</span>
+                    </div>
+
+                    <div>
+                        <h4>Tech Internship 2026</h4>
+                        <p>6 days left</p>
+                    </div>
+
+                </div>
+
+
+                <a href="{% url 'opportunities' %}"
+                   class="sidebar-view-all">
+                    View all deadlines
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+
+
+            <!-- Quick Actions -->
+            <div class="quick-actions-card">
+
+                <h3>Quick actions</h3>
+
+                <a href="{% url 'opportunities' %}">
+                    <span class="quick-action-icon">
+                        <i class="bi bi-search"></i>
+                    </span>
+
+                    <div>
+                        <strong>Find opportunities</strong>
+                        <small>Browse all listings</small>
+                    </div>
+
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+
+                <a href="{% url 'categories' %}">
+                    <span class="quick-action-icon quick-icon-purple">
+                        <i class="bi bi-grid"></i>
+                    </span>
+
+                    <div>
+                        <strong>Explore categories</strong>
+                        <small>Find what suits you</small>
+                    </div>
+
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+
+                <a href="{% url 'profile' %}">
+                    <span class="quick-action-icon quick-icon-orange">
+                        <i class="bi bi-person"></i>
+                    </span>
+
+                    <div>
+                        <strong>Update profile</strong>
+                        <small>Manage your account</small>
+                    </div>
+
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+
+            </div>
+
+        </aside>
+
+    </div>
+
+</div>
+
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'opportunity/js/dashboard.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}Saved Opportunities | Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<section class="saved-page">
+    <div class="container">
+
+        <!-- Header -->
+        <div class="saved-page-header">
+            <div>
+                <span class="saved-eyebrow">
+                    <i class="bi bi-bookmark-heart-fill"></i>
+                    My Opportunities
+                </span>
+
+                <h1>Saved Opportunities</h1>
+
+                <p>
+                    Keep the opportunities you're interested in close at hand.
+                </p>
+            </div>
+
+            <a href="{% url 'opportunities' %}" class="saved-browse-btn">
+                <i class="bi bi-search"></i>
+                Find Opportunities
+            </a>
+        </div>
+
+        <!-- Summary -->
+        <div class="saved-summary">
+            <div class="saved-summary-left">
+                <div class="saved-count-icon">
+                    <i class="bi bi-bookmark-fill"></i>
+                </div>
+
+                <div>
+                    <strong id="savedTotal">
+                        {{ saved_opportunities|length }} saved opportunities
+                    </strong>
+
+                    <span id="savedSummaryText">
+                        You're keeping track of {{ saved_opportunities|length }} opportunities.
+                    </span>
+                </div>
+            </div>
+
+            <div class="saved-sort">
+                <label for="savedSort">Sort by</label>
+
+                <select id="savedSort">
+                    <option value="recent">Recently saved</option>
+                    <option value="deadline">Deadline</option>
+                    <option value="title">Title</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="saved-filter-bar">
+
+            <button type="button" class="saved-filter active" data-filter="all">
+                All <span>{{ saved_opportunities|length }}</span>
+            </button>
+
+            {% regroup saved_opportunities by opportunity.opportunity_type as opportunity_groups %}
+
+            {% for group in opportunity_groups %}
+                <button
+                    type="button"
+                    class="saved-filter"
+                    data-filter="{{ group.grouper|lower }}"
+                >
+                    {{ group.grouper|title }}
+                    <span>{{ group.list|length }}</span>
+                </button>
+            {% endfor %}
+
+        </div>
+
+        <!-- Saved Opportunities -->
+        <div class="saved-list" id="savedList">
+
+            {% for saved in saved_opportunities %}
+                {% with opportunity=saved.opportunity %}
+
+                <article
+                    class="saved-full-card"
+                    data-category="{{ opportunity.opportunity_type|lower }}"
+                    data-title="{{ opportunity.title|lower }}"
+                    data-deadline="{% if opportunity.deadline %}{{ opportunity.deadline|date:'Y-m-d' }}{% else %}9999-12-31{% endif %}"
+                    data-saved="{{ saved.created_at|date:'U' }}"
+                    data-save-url="{% url 'toggle_saved_opportunity' opportunity.id %}"
+                >
+
+                    <div class="saved-card-icon saved-icon-green">
+                        {% if opportunity.opportunity_type == "scholarship" %}
+                            <i class="bi bi-mortarboard-fill"></i>
+                        {% elif opportunity.opportunity_type == "job" %}
+                            <i class="bi bi-briefcase-fill"></i>
+                        {% elif opportunity.opportunity_type == "internship" %}
+                            <i class="bi bi-code-slash"></i>
+                        {% elif opportunity.opportunity_type == "fellowship" %}
+                            <i class="bi bi-globe-africa"></i>
+                        {% else %}
+                            <i class="bi bi-stars"></i>
+                        {% endif %}
+                    </div>
+
+                    <div class="saved-card-content">
+
+                        <div class="saved-card-heading">
+                            <div>
+                                <span class="saved-card-category">
+                                    {{ opportunity.get_opportunity_type_display }}
+                                </span>
+
+                                <h2>{{ opportunity.title }}</h2>
+
+                                <p class="saved-organization">
+                                    {{ opportunity.organization }}
+                                </p>
+                            </div>
+
+                            <button
+                                class="remove-saved"
+                                type="button"
+                                title="Remove from saved opportunities"
+                                aria-label="Remove {{ opportunity.title }} from saved opportunities"
+                                data-opportunity-id="{{ opportunity.id }}"
+                            >
+                                <i class="bi bi-bookmark-fill"></i>
+                            </button>
+                        </div>
+
+                        <div class="saved-card-meta">
+
+                            <span>
+                                <i class="bi bi-geo-alt"></i>
+                                {{ opportunity.location|default:"Location not specified" }}
+                            </span>
+
+                            <span>
+                                <i class="bi bi-calendar3"></i>
+
+                                {% if opportunity.deadline %}
+                                    Deadline: {{ opportunity.deadline|date:"M d, Y" }}
+                                {% else %}
+                                    No deadline specified
+                                {% endif %}
+                            </span>
+
+                            {% if opportunity.deadline %}
+                                {% if opportunity.deadline < today %}
+                                    <span class="deadline-warning">
+                                        <i class="bi bi-exclamation-circle"></i>
+                                        Deadline passed
+                                    </span>
+                                {% else %}
+                                    <span class="deadline-safe">
+                                        <i class="bi bi-clock"></i>
+                                        {{ opportunity.deadline|timeuntil }} left
+                                    </span>
+                                {% endif %}
+                            {% endif %}
+
+                        </div>
+
+                        <div class="saved-card-actions">
+
+                            <a
+                                href="{% url 'opportunity_detail' opportunity.slug %}"
+                                class="saved-view-btn"
+                            >
+                                View Opportunity
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+
+                            <span class="saved-date">
+                                Saved {{ saved.created_at|timesince }} ago
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </article>
+
+                {% endwith %}
+
+            {% empty %}
+
+                <div class="saved-empty" id="savedEmpty">
+                    <div class="saved-empty-icon">
+                        <i class="bi bi-bookmark"></i>
+                    </div>
+
+                    <h2>No saved opportunities</h2>
+
+                    <p>
+                        Opportunities you bookmark will appear here.
+                        Start exploring and save the ones you don't want to miss.
+                    </p>
+
+                    <a href="{% url 'opportunities' %}">
+                        Explore Opportunities
+                        <i class="bi bi-arrow-right"></i>
+                    </a>
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% if saved_opportunities %}
+            <div class="saved-empty" id="savedEmpty" style="display: none;">
+                <div class="saved-empty-icon">
+                    <i class="bi bi-bookmark"></i>
+                </div>
+
+                <h2>No matching opportunities</h2>
+
+                <p>
+                    No saved opportunities match this filter.
+                    Try selecting another category.
+                </p>
+
+                <button type="button" id="clearSavedFilters">
+                    Show All Opportunities
+                </button>
+            </div>
+        {% endif %}
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'opportunity/js/saved.js' %}"></script>
+{% endblock %}

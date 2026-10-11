@@ -1,0 +1,679 @@
+```django
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}My Applications - Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<section class="applications-page py-5">
+    <div class="container">
+
+        <!-- Django Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Page Header -->
+        <div class="applications-header mb-4">
+            <div>
+                <span class="applications-eyebrow">
+                    <i class="bi bi-grid-1x2-fill me-1"></i>
+                    My Opportunity Hub
+                </span>
+
+                <h1 class="applications-title mt-2">
+                    Manage your opportunities
+                </h1>
+
+                <p class="applications-subtitle">
+                    Track applications, stay updated, get help, and connect with
+                    the Opportunity Kenya support team.
+                </p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <div class="applications-tabs mb-4">
+            <button type="button" class="applications-tab active" data-section="applications">
+                <i class="bi bi-file-earmark-text"></i>
+                <span>My Applications</span>
+            </button>
+
+           <a href="{% url 'notifications' %}" class="applications-tab">
+                <i class="bi bi-bell"></i>
+                <span>Notifications</span>
+
+            
+            {% if unread_notifications_count %}
+                <span class="notification-count">
+                    {{ unread_notifications_count }}
+                </span>
+            {% endif %}
+            
+
+            </a>
+
+
+            <button type="button" class="applications-tab" data-section="faq">
+                <i class="bi bi-question-circle"></i>
+                <span>Help & FAQ</span>
+            </button>
+
+            <button type="button" class="applications-tab" data-section="contact">
+                <i class="bi bi-headset"></i>
+                <span>Contact Us</span>
+            </button>
+        </div>
+
+        <!-- APPLICATIONS SECTION -->
+        <div class="applications-section active" id="applications-section">
+
+            <!-- Dynamic Summary Cards -->
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="application-stat-card">
+                        <div class="application-stat-icon">
+                            <i class="bi bi-file-earmark-text"></i>
+                        </div>
+                        <div>
+                            <span>Total Applications</span>
+                            <strong>{{ application_stats.total|default:0 }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="application-stat-card">
+                        <div class="application-stat-icon pending">
+                            <i class="bi bi-clock"></i>
+                        </div>
+                        <div>
+                            <span>Pending</span>
+                            <strong>{{ application_stats.pending|default:0 }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="application-stat-card">
+                        <div class="application-stat-icon review">
+                            <i class="bi bi-search"></i>
+                        </div>
+                        <div>
+                            <span>Under Review</span>
+                            <strong>{{ application_stats.review|default:0 }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3">
+                    <div class="application-stat-card">
+                        <div class="application-stat-icon accepted">
+                            <i class="bi bi-check-circle"></i>
+                        </div>
+                        <div>
+                            <span>Accepted</span>
+                            <strong>{{ application_stats.accepted|default:0 }}</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Applications Toolbar -->
+            <div class="applications-toolbar">
+                <div>
+                    <h2>Application History</h2>
+                    <p>Keep track of opportunities you have added to your application history.</p>
+                </div>
+
+                <div class="applications-toolbar-actions">
+                    <div class="application-search">
+                        <i class="bi bi-search"></i>
+                        <input
+                            type="text"
+                            id="applicationSearch"
+                            placeholder="Search applications..."
+                            aria-label="Search applications"
+                        >
+                    </div>
+
+                    <select id="applicationStatusFilter" class="application-filter" aria-label="Filter by application status">
+                        <option value="all">All Statuses</option>
+                        <option value="pending">Pending</option>
+                        <option value="review">Under Review</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="withdrawn">Withdrawn</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Dynamic Application List -->
+            <div class="application-list" id="applicationList">
+
+                {% for application in applications %}
+
+                    <div
+                        class="application-card"
+                        data-status="{{ application.status }}"
+                        data-name="{{ application.opportunity.title|lower }}"
+                    >
+
+                        <div class="application-main">
+
+                            <div class="application-logo
+                                {% if application.opportunity.opportunity_type == 'scholarship' %}scholarship
+                                {% elif application.opportunity.opportunity_type == 'job' %}job
+                                {% elif application.opportunity.opportunity_type == 'internship' %}internship
+                                {% elif application.opportunity.opportunity_type == 'fellowship' %}fellowship
+                                {% else %}training{% endif %}
+                            ">
+                                {% if application.opportunity.opportunity_type == "scholarship" %}
+                                    <i class="bi bi-mortarboard-fill"></i>
+                                {% elif application.opportunity.opportunity_type == "job" %}
+                                    <i class="bi bi-code-slash"></i>
+                                {% elif application.opportunity.opportunity_type == "internship" %}
+                                    <i class="bi bi-laptop"></i>
+                                {% elif application.opportunity.opportunity_type == "fellowship" %}
+                                    <i class="bi bi-people-fill"></i>
+                                {% else %}
+                                    <i class="bi bi-pc-display"></i>
+                                {% endif %}
+                            </div>
+
+                            <div class="application-info">
+
+                                <div class="application-category">
+                                    {{ application.opportunity.get_opportunity_type_display|upper }}
+                                </div>
+
+                                <h3>{{ application.opportunity.title }}</h3>
+
+                                <p>{{ application.opportunity.organization }}</p>
+
+                                <div class="application-meta">
+
+                                    <span>
+                                        <i class="bi bi-calendar3"></i>
+                                        Added {{ application.applied_at|date:"M d, Y" }}
+                                    </span>
+
+                                    {% if application.opportunity.deadline %}
+                                        <span>
+                                            <i class="bi bi-calendar-event"></i>
+                                            Deadline {{ application.opportunity.deadline|date:"M d, Y" }}
+                                        </span>
+                                    {% endif %}
+
+                                    {% if application.opportunity.location %}
+                                        <span>
+                                            <i class="bi bi-geo-alt"></i>
+                                            {{ application.opportunity.location }}
+                                        </span>
+                                    {% endif %}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="application-status
+                            {% if application.status == 'pending' %}pending-status
+                            {% elif application.status == 'review' %}review-status
+                            {% elif application.status == 'accepted' %}accepted-status
+                            {% elif application.status == 'rejected' %}rejected-status
+                            {% else %}pending-status{% endif %}
+                        ">
+                            <span class="status-dot"></span>
+                            {{ application.get_status_display }}
+                        </div>
+
+                        <div class="application-actions">
+                            <a
+                                href="{% url 'opportunity_detail' application.opportunity.slug %}"
+                                class="btn btn-outline-primary rounded-pill"
+                            >
+                                View
+                            </a>
+                        </div>
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="text-center py-5">
+                        <div class="applications-empty-icon mb-3">
+                            <i class="bi bi-file-earmark-x"></i>
+                        </div>
+
+                        <h3>No applications yet</h3>
+
+                        <p>
+                            Opportunities you add to My Applications will appear here.
+                        </p>
+
+                        <a href="{% url 'opportunities' %}" class="btn btn-primary rounded-pill px-4">
+                            Explore Opportunities
+                        </a>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+            <!-- Search/Filter Empty State -->
+            <div class="applications-empty" id="applicationsEmpty" style="display: none;">
+                <div class="applications-empty-icon">
+                    <i class="bi bi-file-earmark-x"></i>
+                </div>
+
+                <h3>No applications found</h3>
+
+                <p>
+                    We couldn't find any applications matching your search or filter.
+                </p>
+
+                <button
+                    type="button"
+                    class="btn btn-primary rounded-pill px-4"
+                    id="clearApplicationFilters"
+                >
+                    Clear Filters
+                </button>
+            </div>
+
+        </div>
+
+        <!-- NOTIFICATIONS SECTION -->
+        <div class="applications-section" id="notifications-section">
+
+            <div class="hub-section-header">
+                <div>
+                    <span class="hub-eyebrow">
+                        <i class="bi bi-bell-fill"></i>
+                        Stay Updated
+                    </span>
+
+                    <h2>Notifications</h2>
+
+                    <p>
+                        Important updates about opportunities, deadlines and your account.
+                    </p>
+                </div>
+
+                <form method="post" action="{% url 'mark_all_notifications_read' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-dark rounded-pill" id="markAllRead">
+                        <i class="bi bi-check2-all me-1"></i>
+                        Mark all as read
+                    </button>
+                </form>
+            </div>
+
+            <div class="notification-list">
+
+                {% for notification in notifications %}
+
+                    <div class="hub-notification {% if not notification.is_read %}unread{% endif %}">
+
+                        <div class="notification-icon opportunity">
+                            {% if notification.notification_type == "deadline" %}
+                                <i class="bi bi-alarm"></i>
+                            {% elif notification.notification_type == "account" %}
+                                <i class="bi bi-person-check"></i>
+                            {% else %}
+                                <i class="bi bi-stars"></i>
+                            {% endif %}
+                        </div>
+
+                        <div class="notification-content">
+                            <h4>{{ notification.title }}</h4>
+
+                            <p>{{ notification.message }}</p>
+
+                            <span>{{ notification.created_at|date:"M d, Y · H:i" }}</span>
+
+                            {% if notification.link %}
+                                <p class="mt-2">
+                                    <a href="{{ notification.link }}">View details</a>
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        {% if not notification.is_read %}
+                            <form method="post" action="{% url 'mark_notification_read' notification.id %}">
+                                {% csrf_token %}
+                                <button type="submit" class="notification-read" title="Mark as read">
+                                    <i class="bi bi-circle-fill"></i>
+                                </button>
+                            </form>
+                        {% else %}
+                            <span class="notification-read" title="Already read">
+                                <i class="bi bi-check-circle"></i>
+                            </span>
+                        {% endif %}
+
+                    </div>
+
+                {% empty %}
+
+                    <div class="text-center py-5">
+                        <i class="bi bi-bell-slash fs-1"></i>
+                        <h4 class="mt-3">You're all caught up!</h4>
+                        <p>You don't have any notifications yet.</p>
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <!-- FAQ SECTION -->
+        <div class="applications-section" id="faq-section">
+
+            <div class="hub-section-header centered">
+                <span class="hub-eyebrow">
+                    <i class="bi bi-question-circle-fill"></i>
+                    Need Help?
+                </span>
+
+                <h2>Help & Frequently Asked Questions</h2>
+
+                <p>
+                    Find quick answers to common questions about Opportunity Kenya.
+                </p>
+            </div>
+
+            <div class="faq-search">
+                <i class="bi bi-search"></i>
+                <input
+                    type="text"
+                    id="faqSearch"
+                    placeholder="Search frequently asked questions..."
+                >
+            </div>
+
+            <div class="faq-list">
+
+                <div class="faq-item">
+                    <button class="faq-question" type="button">
+                        <span>How do I apply for an opportunity?</span>
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Open the opportunity you are interested in, review the
+                            requirements and application instructions, then follow
+                            the official application link provided by the organization.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                     <button
+                        type="button"
+                        class="save-btn {% if opportunity.id in saved_opportunity_ids %}saved{% endif %}"
+                        data-opportunity-id="{{ opportunity.id }}"
+                        aria-label="Save opportunity"
+                        title="Save opportunity"
+                    >
+                        <i class="bi {% if opportunity.id in saved_opportunity_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Yes. Use the bookmark button on an opportunity to save it.
+                            Your saved opportunities can be accessed from your account dashboard.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" type="button">
+                        <span>How can I track my applications?</span>
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Use the application-tracking feature on an opportunity to add
+                            it to your application history. You can then view the recorded
+                            status from the My Applications section.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" type="button">
+                        <span>Are the opportunities verified?</span>
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Opportunity Kenya is designed to prioritize legitimate
+                            opportunities and provide clear application sources.
+                            Always review the official organization and application
+                            instructions before submitting sensitive information.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" type="button">
+                        <span>How do I update my profile?</span>
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Open your profile from the dashboard or account menu.
+                            You can update your personal information, skills,
+                            interests and opportunity preferences.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question" type="button">
+                        <span>How can I contact Opportunity Kenya?</span>
+                        <i class="bi bi-plus-lg"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p>
+                            Use the Contact Us section on this page to send a message
+                            to our support team.
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- CONTACT SECTION -->
+        <div class="applications-section" id="contact-section">
+
+            <div class="row g-4">
+
+                <div class="col-lg-5">
+
+                    <div class="contact-intro">
+
+                        <span class="hub-eyebrow">
+                            <i class="bi bi-headset"></i>
+                            We're Here To Help
+                        </span>
+
+                        <h2>Have a question?</h2>
+
+                        <p>
+                            Whether you found an issue, need help using the platform,
+                            or simply want to share feedback, we'd love to hear from you.
+                        </p>
+
+                        <div class="contact-info-list">
+
+                            <div class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="bi bi-envelope"></i>
+                                </div>
+                                <div>
+                                    <span>Email</span>
+                                    <strong>support@opportunitykenya.com</strong>
+                                </div>
+                            </div>
+
+                            <div class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="bi bi-clock"></i>
+                                </div>
+                                <div>
+                                    <span>Support Hours</span>
+                                    <strong>Monday – Friday, 8AM – 5PM</strong>
+                                </div>
+                            </div>
+
+                            <div class="contact-info-item">
+                                <div class="contact-info-icon">
+                                    <i class="bi bi-geo-alt"></i>
+                                </div>
+                                <div>
+                                    <span>Location</span>
+                                    <strong>Kenya</strong>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="col-lg-7">
+
+                    <div class="contact-form-card">
+
+                        <div class="contact-form-header">
+                            <h3>Send us a message</h3>
+                            <p>
+                                Fill in the form and our support team will get back to you.
+                            </p>
+                        </div>
+
+                        <form
+                            id="supportContactForm"
+                            method="post"
+                            action="{% url 'submit_support_message' %}"
+                        >
+                            {% csrf_token %}
+
+                            <div class="row g-3">
+
+                                <div class="col-md-6">
+                                    <label for="contactName">Full Name</label>
+                                    <input
+                                        type="text"
+                                        id="contactName"
+                                        name="full_name"
+                                        class="form-control"
+                                        placeholder="Your full name"
+                                        value="{{ request.user.get_full_name }}"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label for="contactEmail">Email Address</label>
+                                    <input
+                                        type="email"
+                                        id="contactEmail"
+                                        name="email"
+                                        class="form-control"
+                                        placeholder="you@example.com"
+                                        value="{{ request.user.email }}"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="contactSubject">Subject</label>
+                                    <select
+                                        id="contactSubject"
+                                        name="subject"
+                                        class="form-select"
+                                        required
+                                    >
+                                        <option value="">Select a subject</option>
+                                        <option value="Account Help">Account Help</option>
+                                        <option value="Application Support">Application Support</option>
+                                        <option value="Opportunity Issue">Opportunity Issue</option>
+                                        <option value="Technical Problem">Technical Problem</option>
+                                        <option value="Feedback">Feedback</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12">
+                                    <label for="contactMessage">Message</label>
+                                    <textarea
+                                        id="contactMessage"
+                                        name="message"
+                                        class="form-control"
+                                        rows="6"
+                                        placeholder="Tell us how we can help..."
+                                        required
+                                    ></textarea>
+                                </div>
+
+                                <div class="col-12">
+                                    <button
+                                        type="submit"
+                                        class="btn btn-primary rounded-pill px-4 contact-submit"
+                                    >
+                                        <i class="bi bi-send me-1"></i>
+                                        Send Message
+                                    </button>
+                                </div>
+
+                            </div>
+                        </form>
+
+                        <div class="contact-success" id="contactSuccess" style="display: none;">
+                            <div class="contact-success-icon">
+                                <i class="bi bi-check-lg"></i>
+                            </div>
+                            <h4>Message received!</h4>
+                            <p>Your message has been submitted successfully.</p>
+                            <button
+                                type="button"
+                                class="btn btn-outline-dark rounded-pill"
+                                id="sendAnotherMessage"
+                            >
+                                Send another message
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'opportunity/js/my-applications.js' %}"></script>
+{% endblock %}
+```

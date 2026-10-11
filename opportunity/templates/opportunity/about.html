@@ -1,0 +1,482 @@
+```html
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}About Us | Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<!-- =========================================
+     ABOUT HERO
+========================================= -->
+
+<section class="about-hero">
+    <div class="container">
+        <div class="about-hero-content text-center">
+
+            <span class="hero-eyebrow">
+                <i class="bi bi-compass me-1"></i>
+                About Opportunity Kenya
+            </span>
+
+            <h1>
+                Connecting people to
+                <span>better opportunities.</span>
+            </h1>
+
+            <p>
+                Opportunity Kenya is a platform built to make it easier
+                for people in Kenya to discover scholarships, jobs,
+                internships, fellowships, grants, competitions,
+                training programmes and more.
+            </p>
+
+            <div class="mt-4">
+                <a href="{% url 'opportunities' %}"
+                   class="btn btn-primary rounded-pill px-4">
+                    Explore opportunities
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- =========================================
+     ABOUT INTRODUCTION
+========================================= -->
+
+<section class="about-intro">
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-6">
+
+                <span class="section-label">
+                    Our mission
+                </span>
+
+                <h2>
+                    Opportunities shouldn't be difficult to find.
+                </h2>
+
+                <p>
+                    Every day, organizations publish opportunities that
+                    can change someone's education, career, business,
+                    or future.
+                </p>
+
+                <p>
+                    The challenge is finding them at the right time.
+                    Opportunity Kenya brings these opportunities together
+                    in one accessible platform so users can spend less
+                    time searching and more time applying.
+                </p>
+
+                <a href="{% url 'opportunities' %}"
+                   class="btn btn-primary rounded-pill px-4 mt-2">
+                    Explore opportunities
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <div class="about-visual">
+
+                    <div class="about-visual-main">
+
+                        <div class="about-visual-icon">
+                            <i class="bi bi-compass"></i>
+                        </div>
+
+                        <h3>
+                            Discover.<br>
+                            Apply.<br>
+                            Grow.
+                        </h3>
+
+                        <p>
+                            Your starting point for discovering
+                            opportunities across Kenya and beyond.
+                        </p>
+
+                    </div>
+
+                    <div class="about-floating-card floating-card-one">
+
+                        <div class="floating-icon">
+                            <i class="bi bi-mortarboard"></i>
+                        </div>
+
+                        <div>
+                            <strong>Scholarships</strong>
+                            <span>Education opportunities</span>
+                        </div>
+
+                    </div>
+
+                    <div class="about-floating-card floating-card-two">
+
+                        <div class="floating-icon">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+
+                        <div>
+                            <strong>Jobs & Internships</strong>
+                            <span>Career opportunities</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================================
+     WHAT WE OFFER
+     DYNAMIC DATABASE CATEGORIES
+========================================= -->
+
+<section class="about-offer">
+    <div class="container">
+
+        <div class="section-heading text-center mb-5">
+
+            <span class="section-label">
+                What you can discover
+            </span>
+
+            <h2>
+                One platform. Many possibilities.
+            </h2>
+
+            <p>
+                Explore different types of opportunities based
+                on where you are and where you want to go.
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            {% for category in categories %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="about-feature-card h-100">
+
+                        <div class="about-feature-icon">
+                            <i class="bi bi-grid"></i>
+                        </div>
+
+                        <h3>{{ category.name }}</h3>
+
+                        <p>
+                            {{ category.description|default:"Explore opportunities in this category and discover new possibilities for your future." }}
+                        </p>
+
+                        <a href="{% url 'categories' %}"
+                           class="btn btn-outline-primary rounded-pill mt-2">
+                            Explore category
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12 text-center">
+
+                    <div class="about-feature-card">
+
+                        <div class="about-feature-icon">
+                            <i class="bi bi-grid"></i>
+                        </div>
+
+                        <h3>Opportunities for Everyone</h3>
+
+                        <p>
+                            Explore scholarships, jobs, internships,
+                            grants, fellowships and training programmes.
+                            New categories will appear here when available.
+                        </p>
+
+                        <a href="{% url 'opportunities' %}"
+                           class="btn btn-primary rounded-pill px-4">
+                            Browse opportunities
+                            <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================================
+     HOW IT WORKS
+========================================= -->
+
+<section class="about-how">
+    <div class="container">
+
+        <div class="section-heading text-center mb-5">
+
+            <span class="section-label">
+                How it works
+            </span>
+
+            <h2>
+                Finding opportunities made simple.
+            </h2>
+
+            <p>
+                From discovery to application, Opportunity Kenya
+                keeps the process straightforward.
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-md-4">
+
+                <div class="how-step">
+
+                    <div class="how-number">01</div>
+
+                    <div class="how-icon">
+                        <i class="bi bi-search"></i>
+                    </div>
+
+                    <h3>Discover</h3>
+
+                    <p>
+                        Browse opportunities by category, location,
+                        type or keyword.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="how-step">
+
+                    <div class="how-number">02</div>
+
+                    <div class="how-icon">
+                        <i class="bi bi-file-earmark-text"></i>
+                    </div>
+
+                    <h3>Review</h3>
+
+                    <p>
+                        Read the requirements, benefits, deadlines
+                        and application information.
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="col-md-4">
+
+                <div class="how-step">
+
+                    <div class="how-number">03</div>
+
+                    <div class="how-icon">
+                        <i class="bi bi-send"></i>
+                    </div>
+
+                    <h3>Apply</h3>
+
+                    <p>
+                        Follow the official application instructions
+                        and take the next step toward your goal.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================================
+     WHY OPPORTUNITY KENYA
+========================================= -->
+
+<section class="about-values">
+    <div class="container">
+
+        <div class="row g-5 align-items-center">
+
+            <div class="col-lg-5">
+
+                <span class="section-label">
+                    Why Opportunity Kenya
+                </span>
+
+                <h2>
+                    Built around the people looking for opportunities.
+                </h2>
+
+                <p>
+                    We believe access to information should not be
+                    the barrier between someone and an opportunity
+                    that could change their future.
+                </p>
+
+            </div>
+
+            <div class="col-lg-7">
+
+                <div class="value-list">
+
+                    <div class="value-item">
+
+                        <div class="value-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <div>
+                            <h4>Easy discovery</h4>
+
+                            <p>
+                                Find relevant opportunities without
+                                searching through countless websites.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="value-item">
+
+                        <div class="value-icon">
+                            <i class="bi bi-funnel"></i>
+                        </div>
+
+                        <div>
+                            <h4>Better organization</h4>
+
+                            <p>
+                                Opportunities are organized into
+                                categories and useful filters.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="value-item">
+
+                        <div class="value-icon">
+                            <i class="bi bi-clock"></i>
+                        </div>
+
+                        <div>
+                            <h4>Deadline awareness</h4>
+
+                            <p>
+                                Quickly identify deadlines so you can
+                                plan your applications in time.
+                            </p>
+                        </div>
+
+                    </div>
+
+                    <div class="value-item">
+
+                        <div class="value-icon">
+                            <i class="bi bi-bookmark"></i>
+                        </div>
+
+                        <div>
+                            <h4>Save what matters</h4>
+
+                            <p>
+                                Keep track of opportunities you want
+                                to return to later.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+
+<!-- =========================================
+     CALL TO ACTION
+========================================= -->
+
+<section class="about-cta">
+    <div class="container">
+
+        <div class="about-cta-card text-center">
+
+            <span class="section-label">
+                Your next opportunity could be here.
+            </span>
+
+            <h2>
+                Ready to discover what's possible?
+            </h2>
+
+            <p>
+                Explore opportunities and take the next step
+                toward your goals.
+            </p>
+
+            <div class="about-cta-actions">
+
+                <a href="{% url 'opportunities' %}"
+                   class="btn btn-primary rounded-pill px-4">
+                    Explore opportunities
+                    <i class="bi bi-arrow-right ms-1"></i>
+                </a>
+
+                <a href="{% url 'categories' %}"
+                   class="btn btn-outline-dark rounded-pill px-4">
+                    Browse categories
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}
+

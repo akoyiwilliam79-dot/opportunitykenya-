@@ -1,0 +1,331 @@
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}{{ opportunity.title }} | Opportunity Kenya{% endblock %}
+
+{% block content %}
+
+<!-- OPPORTUNITY DETAILS HEADER -->
+
+<section class="opportunity-detail-header">
+    <div class="container">
+
+
+    <a href="{% url 'opportunities' %}" class="back-link">
+        <i class="bi bi-arrow-left"></i>
+        Back to opportunities
+    </a>
+
+    <div class="detail-header-card">
+
+        <div class="detail-header-main">
+            <div class="detail-logo">
+                {{ opportunity.organization|first|upper }}
+            </div>
+
+            <div class="detail-heading">
+                <span class="opportunity-type">
+                    {{ opportunity.get_opportunity_type_display }}
+                </span>
+
+                <h1>{{ opportunity.title }}</h1>
+
+                <p class="organization-name">
+                    <i class="bi bi-building"></i>
+                    {{ opportunity.organization }}
+                </p>
+            </div>
+        </div>
+
+        <div class="detail-actions">
+
+            <!-- Save Opportunity -->
+            <button
+                type="button"
+                class="save-btn {% if opportunity.id in saved_opportunity_ids %}saved{% endif %}"
+                data-opportunity-id="{{ opportunity.id }}"
+                aria-label="Save opportunity"
+                title="Save opportunity"
+            >
+                <i class="bi {% if opportunity.id in saved_opportunity_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}"></i>
+            </button>
+
+            <!-- External Application Link -->
+            {% if opportunity.application_url %}
+                <a
+                    href="{{ opportunity.application_url }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-primary rounded-pill px-4"
+                >
+                    Apply Now
+                    <i class="bi bi-arrow-up-right ms-1"></i>
+                </a>
+            {% endif %}
+
+            <!-- Application Tracking Button -->
+            {% if user.is_authenticated %}
+
+                <form
+                    method="post"
+                    action="{% url 'track_application' opportunity.id %}"
+                    class="d-inline"
+                >
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="btn btn-outline-primary rounded-pill px-4"
+                    >
+                        <i class="bi bi-check2-circle me-1"></i>
+                        Track My Application
+                    </button>
+                </form>
+
+            {% else %}
+
+                <a
+                    href="{% url 'login' %}?next={{ request.path|urlencode }}"
+                    class="btn btn-outline-primary rounded-pill px-4"
+                >
+                    <i class="bi bi-box-arrow-in-right me-1"></i>
+                    Log in to Track
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+</div>
+
+
+</section>
+
+<!-- OPPORTUNITY DETAILS CONTENT -->
+
+<section class="opportunity-detail-section">
+    <div class="container">
+
+
+    <div class="row gx-5 gy-5">
+
+        <!-- MAIN CONTENT -->
+        <div class="col-lg-8">
+
+            <article class="detail-content-card">
+
+                <!-- Description -->
+                <div class="detail-section">
+                    <h2>About this opportunity</h2>
+
+                    <div class="detail-description">
+                        {{ opportunity.description|linebreaks }}
+                    </div>
+                </div>
+
+                <!-- Requirements -->
+                <div class="detail-section">
+                    <h2>Requirements</h2>
+
+                    {% if opportunity.requirements %}
+                        <div class="detail-description">
+                            {{ opportunity.requirements|linebreaks }}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">
+                            No specific requirements have been provided.
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Benefits -->
+                <div class="detail-section">
+                    <h2>Benefits</h2>
+
+                    {% if opportunity.benefits %}
+                        <div class="detail-description">
+                            {{ opportunity.benefits|linebreaks }}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">
+                            No benefits information has been provided.
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Application Instructions -->
+                <div class="detail-section">
+                    <h2>How to apply</h2>
+
+                    {% if opportunity.how_to_apply %}
+                        <div class="detail-description">
+                            {{ opportunity.how_to_apply|linebreaks }}
+                        </div>
+                    {% else %}
+                        <p class="text-muted">
+                            Application instructions have not been provided yet.
+                        </p>
+                    {% endif %}
+                </div>
+
+                <!-- Apply Box -->
+                <div class="detail-apply-box">
+                    <div>
+                        <h3>Ready to apply?</h3>
+
+                        <p>
+                            Visit the official application platform
+                            to submit your application.
+                        </p>
+                    </div>
+
+                    {% if opportunity.application_url %}
+                        <a
+                            href="{{ opportunity.application_url }}"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-primary rounded-pill px-4"
+                        >
+                            Apply Now
+                            <i class="bi bi-arrow-up-right ms-1"></i>
+                        </a>
+                    {% else %}
+                        <span class="text-muted">
+                            Application link unavailable
+                        </span>
+                    {% endif %}
+                </div>
+
+            </article>
+        </div>
+
+
+        <!-- SIDEBAR -->
+        <div class="col-lg-4">
+
+            <aside class="detail-sidebar">
+
+                <!-- Opportunity Information -->
+                <div class="detail-info-card">
+                    <h4>Opportunity information</h4>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-calendar3"></i>
+                        </div>
+
+                        <div>
+                            <span>Deadline</span>
+                            <strong>
+                                {% if opportunity.deadline %}
+                                    {{ opportunity.deadline|date:"d F Y" }}
+                                {% else %}
+                                    No deadline
+                                {% endif %}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-geo-alt"></i>
+                        </div>
+
+                        <div>
+                            <span>Location</span>
+                            <strong>
+                                {{ opportunity.location|default:"Not specified" }}
+                            </strong>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-bookmark"></i>
+                        </div>
+
+                        <div>
+                            <span>Category</span>
+                            <strong>{{ opportunity.category.name }}</strong>
+                        </div>
+                    </div>
+
+                    <div class="info-item">
+                        <div class="info-icon">
+                            <i class="bi bi-clock"></i>
+                        </div>
+
+                        <div>
+                            <span>Opportunity type</span>
+                            <strong>
+                                {{ opportunity.get_opportunity_type_display }}
+                            </strong>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Deadline Warning -->
+                {% if opportunity.deadline %}
+                    <div class="deadline-card">
+
+                        <div class="deadline-icon">
+                            <i class="bi bi-hourglass-split"></i>
+                        </div>
+
+                        <div>
+                            <strong>Application deadline</strong>
+
+                            <p>
+                                {{ opportunity.deadline|date:"d F Y" }}
+                            </p>
+
+                            <small>
+                                Make sure to apply before the deadline.
+                            </small>
+                        </div>
+
+                    </div>
+                {% endif %}
+
+
+                <!-- Share -->
+                <div class="share-card">
+                    <h5>Share this opportunity</h5>
+
+                    <div class="share-buttons">
+                        <button type="button" aria-label="Share on Facebook">
+                            <i class="bi bi-facebook"></i>
+                        </button>
+
+                        <button type="button" aria-label="Share on LinkedIn">
+                            <i class="bi bi-linkedin"></i>
+                        </button>
+
+                        <button type="button" aria-label="Share on WhatsApp">
+                            <i class="bi bi-whatsapp"></i>
+                        </button>
+
+                        <button type="button" aria-label="Copy link">
+                            <i class="bi bi-link-45deg"></i>
+                        </button>
+                    </div>
+                </div>
+
+            </aside>
+        </div>
+
+    </div>
+</div>
+
+
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="{% static 'opportunity/js/opportunity-detail.js' %}"></script>
+
+{% endblock %}

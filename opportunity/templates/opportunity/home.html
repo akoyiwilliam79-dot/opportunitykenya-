@@ -1,0 +1,421 @@
+{% extends "opportunity/base.html" %}
+{% load static %}
+
+{% block title %}
+Opportunity Kenya | Discover Opportunities
+{% endblock %}
+
+{% block content %}
+
+<!-- ================= HERO ================= -->
+
+<section class="hero-section">
+
+    <div class="container">
+
+        <div class="row align-items-center min-vh-75">
+
+            <!-- LEFT -->
+
+            <div class="col-lg-7">
+
+                <span class="hero-badge">
+                    <i class="bi bi-stars"></i>
+                    Opportunities for your next step
+                </span>
+
+                <h1 class="hero-title">
+                    Discover opportunities.
+                    <span>Build your future.</span>
+                </h1>
+
+                <p class="hero-text">
+                    Find scholarships, jobs, internships, fellowships,
+                    grants, competitions and training opportunities
+                    available in Kenya — all in one place.
+                </p>
+
+                <!-- SEARCH -->
+
+               <form action="{% url 'opportunities' %}" method="GET" class="hero-search">
+                            <div class="search-input">
+                                <i class="bi bi-search"></i>
+
+                        
+                            <input
+                                type="search"
+                                name="q"
+                                id="homeSearchInput"
+                                placeholder="Search scholarships, jobs, internships..."
+                                aria-label="Search opportunities"
+                                autocomplete="off"
+                                required
+                            >
+                        </div>
+
+                        <button type="submit" class="btn btn-primary search-btn">
+                            Search
+                        </button>
+                        
+
+                        </form>
+
+                <!-- REAL STATISTICS -->
+
+                <div class="hero-stats">
+
+                    <div>
+                        <strong>{{ total_opportunities }}+</strong>
+                        <span>Opportunities</span>
+                    </div>
+
+                    <div>
+                        <strong>{{ total_organizations }}+</strong>
+                        <span>Organizations</span>
+                    </div>
+
+                    <div>
+                        <strong>{{ total_categories }}+</strong>
+                        <span>Categories</span>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- RIGHT -->
+
+            <div class="col-lg-5 d-none d-lg-block">
+
+                <div class="hero-visual">
+
+                    <div class="hero-main-card">
+
+                        <div class="hero-icon">
+                            <i class="bi bi-rocket-takeoff"></i>
+                        </div>
+
+                        <h4>
+                            Your next opportunity is waiting.
+                        </h4>
+
+                        <p>
+                            Explore opportunities that can move
+                            your education and career forward.
+                        </p>
+
+                        <a
+                            href="{% url 'opportunities' %}"
+                            class="btn btn-dark rounded-pill px-4"
+                        >
+                            Explore Opportunities
+                        </a>
+
+                    </div>
+
+                    <div class="floating-card card-one">
+                        🎓 Scholarships
+                    </div>
+
+                    <div class="floating-card card-two">
+                        💼 Jobs
+                    </div>
+
+                    <div class="floating-card card-three">
+                        🚀 Fellowships
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CATEGORIES ================= -->
+
+<section class="categories-section" id="categories">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-label">
+                    EXPLORE
+                </span>
+
+                <h2>
+                    Find your next opportunity
+                </h2>
+
+            </div>
+
+            <a href="{% url 'categories' %}" class="view-all">
+                View all
+                <i class="bi bi-arrow-right"></i>
+            </a>
+
+        </div>
+
+        <div class="row g-3 mt-4">
+
+            {% for category in categories %}
+
+                <div class="col-6 col-md-4 col-lg-2">
+
+                    <a
+                        href="{% url 'opportunities' %}?category={{ category.slug|urlencode }}"
+                        class="category-card"
+                    >
+
+                        <div class="category-icon {{ category.slug }}">
+
+                            {% if category.icon %}
+                                <i class="bi {{ category.icon }}"></i>
+                            {% else %}
+                                <i class="bi bi-grid"></i>
+                            {% endif %}
+
+                        </div>
+
+                        <h6>{{ category.name }}</h6>
+
+                        <span>
+                            {% if category.description %}
+                                {{ category.description|truncatewords:4 }}
+                            {% else %}
+                                Explore opportunities
+                            {% endif %}
+                        </span>
+
+                    </a>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <p>
+                        Opportunities are being organized into categories.
+                        Please check back soon.
+                    </p>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= FEATURED OPPORTUNITIES ================= -->
+
+<section class="featured-section" id="opportunities">
+
+    <div class="container">
+
+        <div class="section-heading">
+
+            <div>
+
+                <span class="section-label">
+                    FEATURED
+                </span>
+
+                <h2>
+                    Opportunities worth checking out
+                </h2>
+
+            </div>
+
+            <a href="{% url 'opportunities' %}" class="view-all">
+                Browse all
+                <i class="bi bi-arrow-right"></i>
+            </a>
+
+        </div>
+
+        <div class="row g-4 mt-4">
+
+            {% for opportunity in featured_opportunities %}
+
+                <div class="col-md-6 col-lg-4">
+
+                    <div class="opportunity-card">
+
+                        <!-- OPPORTUNITY TYPE AND BOOKMARK -->
+
+                        <div class="opportunity-top">
+
+                            <span class="opportunity-type {{ opportunity.opportunity_type }}-type">
+                                {{ opportunity.get_opportunity_type_display }}
+                            </span>
+
+                            <button
+                                type="button"
+                                class="save-btn {% if opportunity.id in saved_opportunity_ids %}saved{% endif %}"
+                                data-opportunity-id="{{ opportunity.id }}"
+                                aria-label="{% if opportunity.id in saved_opportunity_ids %}Remove from saved opportunities{% else %}Save opportunity{% endif %}"
+                                title="{% if opportunity.id in saved_opportunity_ids %}Remove from saved opportunities{% else %}Save opportunity{% endif %}"
+                            >
+
+                                <i class="bi {% if opportunity.id in saved_opportunity_ids %}bi-bookmark-fill{% else %}bi-bookmark{% endif %}"></i>
+
+                            </button>
+
+                        </div>
+
+                        <!-- ORGANIZATION -->
+
+                        <div class="organization">
+
+                            <div class="organization-logo">
+
+                                {{ opportunity.organization|first|upper }}
+
+                            </div>
+
+                            <span>
+                                {{ opportunity.organization }}
+                            </span>
+
+                        </div>
+
+                        <!-- TITLE -->
+
+                        <h4>
+                            {{ opportunity.title }}
+                        </h4>
+
+                        <!-- DESCRIPTION -->
+
+                        <p>
+                            {{ opportunity.description|truncatewords:22 }}
+                        </p>
+
+                        <!-- DETAILS -->
+
+                        <div class="opportunity-meta">
+
+                            <span>
+                                <i class="bi bi-geo-alt"></i>
+                                {{ opportunity.location|default:"Location not specified" }}
+                            </span>
+
+                            <span>
+                                <i class="bi bi-calendar3"></i>
+
+                                {% if opportunity.deadline %}
+                                    {{ opportunity.deadline|date:"M d, Y" }}
+                                {% else %}
+                                    No deadline specified
+                                {% endif %}
+
+                            </span>
+
+                        </div>
+
+                        <!-- VIEW DETAILS -->
+
+                        <a
+                            href="{% url 'opportunity_detail' opportunity.slug %}"
+                            class="btn btn-outline-primary w-100 mt-3"
+                        >
+                            View Opportunity
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% empty %}
+
+                <div class="col-12">
+
+                    <div class="text-center py-5">
+
+                        <i class="bi bi-compass fs-1"></i>
+
+                        <h4 class="mt-3">
+                            No featured opportunities yet
+                        </h4>
+
+                        <p>
+                            New opportunities will appear here when
+                            they are published and featured.
+                        </p>
+
+                        <a
+                            href="{% url 'opportunities' %}"
+                            class="btn btn-primary rounded-pill px-4"
+                        >
+                            Explore All Opportunities
+                        </a>
+
+                    </div>
+
+                </div>
+
+            {% endfor %}
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ================= CALL TO ACTION ================= -->
+
+<section class="cta-section">
+
+    <div class="container text-center">
+
+        <span class="section-label">
+            NEVER MISS AN OPPORTUNITY
+        </span>
+
+        <h2>
+            Stay ahead of what's next.
+        </h2>
+
+        <p>
+            Create an account and get notified when new
+            opportunities matching your interests are posted.
+        </p>
+
+        {% if user.is_authenticated %}
+
+            <a
+                href="{% url 'dashboard' %}"
+                class="btn btn-light btn-lg rounded-pill px-5"
+            >
+                Go to Dashboard
+            </a>
+
+        {% else %}
+
+            <a
+                href="{% url 'register' %}"
+                class="btn btn-light btn-lg rounded-pill px-5"
+            >
+                Create Free Account
+            </a>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+{% endblock %}
